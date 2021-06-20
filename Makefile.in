@@ -1,0 +1,54 @@
+SHELL = /bin/sh
+CFLAGS = -g -Wall -pedantic -std=c99 @PKGS_CFLAGS@ @SYSTEM_CFLAGS@
+LDFLAGS = @SYSTEM_LDFLAGS@ @PKGS_LDFLAGS@
+
+prefix = @prefix@
+exec_prefix = $(prefix)
+bindir = $(exec_prefix)/bin
+datarootdir = $(prefix)/share
+mandir = $(datarootdir)/man
+
+INSTALL ?= install
+INSTALLFLAGS ?= -D
+
+SRCS=	\
+	message.c \
+	base64.c \
+	sha1.c \
+	tcpsocket.c \
+	websocket.c \
+	wsframe.c
+
+PROG=emws
+MAN=emws.1
+
+OBJS=$(SRCS:.c=.o)
+
+all: $(PROG)
+
+$(PROG): $(OBJS)
+	$(CC) -o$@ $(OBJS) $(LDFLAGS)
+
+.c.o:
+	$(CC) $(CFLAGS) -c $<
+
+clean:
+	rm -f $(OBJS) $(PROG)
+
+install: $(PROG)
+	$(INSTALL) $(INSTALLFLAGS) $(PROG) $(DESTDIR)$(bindir)/$(PROG)
+	$(INSTALL) $(INSTALLFLAGS) -m 444 $(MAN) \
+		$(DESTDIR)$(mandir)/man1/$(MAN)
+
+uninstall:
+	rm -f $(DESTDIR)$(bindir)/$(PROG)
+	rm -f $(DESTDIR)$(mandir)/man1/$(MAN)
+base64.o: base64.c
+message.o: message.c message.h
+sha1.o: sha1.c sha1.h
+tcpsocket.o: tcpsocket.c tcpsocket.h
+test_base64.o: test_base64.c base64.h
+test_tcpsocket.o: test_tcpsocket.c tcpsocket.h
+websocket.o: websocket.c sha1.h base64.h tcpsocket.h message.h wsframe.h
+wsframe.o: wsframe.c wsframe.h
+

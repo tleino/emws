@@ -1,0 +1,42 @@
+emws - Embeddable WebSocket server
+
+emws source files can be embedded to projects that wish to serve
+content over the WebSocket protocol: see websocket.c for an example.
+
+The files are not very useful as they are, but they can be used as
+/an example/ of how to set up a server that supports the WebSocket
+protocol.
+
+Some caveats:
+
+ - It is a quickly written proof of concept from about year 2015,
+   needs a throughout clean up.
+
+ - Writes debug file to current working directory (useful when
+   testing out things, but needs to be removed from any real server).
+
+ - Is not well configurable but need to change hardcoded strings.
+
+ - Does not support multiple clients and exits after first client
+   and this is because this is a simple example.
+
+Dependencies
+============
+
+No dependencies.
+
+Configure & Install
+===================
+
+./configure ~
+make install
+
+Usage
+=====
+
+./emws 4444 &
+telnet localhost 4444
+GET / HTTP/1.1
+Host: foobar
+Upgrade: websocket
+
