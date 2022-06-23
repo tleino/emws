@@ -130,7 +130,7 @@ void
 wsframe_write(wsframe_t *ws, int fd)
 {
 	char buf[256];
-	buf[0] = (unsigned char) 0x10000001;
+	buf[0] = (unsigned char) 0x81; // %1000 0001
 	buf[1] = ws->len;
 	strcpy(&buf[2], ws->payload);
 	write(fd, buf, strlen(buf));
